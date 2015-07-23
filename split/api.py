@@ -4,14 +4,20 @@ Course information is queried directly from the Split MongoDB collections.
 """
 
 from opaque_keys.edx.keys import CourseKey
-from mongo import structures_collection
+from mongo import get_collection
 
 
 def get_courses():
     """
     Returns a list of CourseKeys for all Split courses from MongoDB.
     """
-    pass
+    coll = get_collection('modulestore.active_versions')
+    courses = []
+    for course in  coll.find():
+        courses.append(course)
+
+    return courses
+
 
 def get_structure_id(course_key):
     """

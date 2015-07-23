@@ -4,6 +4,7 @@ Utility functions for connecting to Mongo.
 
 import os
 import pymongo
+from pymongo.errors import InvalidName
 import logging
 
 
@@ -12,7 +13,7 @@ log = logging.getLogger(__name__)
 # Use this connection info unless overridden by environment variables.
 DEFAULT_CONN_INFO = {
     'host': 'localhost',
-    'port': 27017,
+    'port': 27019,
     'dbname': 'edxapp',
     'user': 'edxapp',
     'password': None,
@@ -22,18 +23,18 @@ DEFAULT_CONN_INFO = {
 SPLIT_STRUCTURES_COLLECTION = 'modulestore.structures'
 
 
-def structures_collection():
+def get_collection(collection_name):
     """
     Returns a PyMongo Collection object for Split structures.
     """
     # Override Mongo server/credentials using environment variables.
     mongo_conn_info = {}
     for env_var, name in (
-        (SPLIT_UTILS_HOST, 'host'),
-        (SPLIT_UTILS_PORT, 'port'),
-        (SPLIT_UTILS_DB, 'dbname'),
-        (SPLIT_UTILS_USERNAME, 'user'),
-        (SPLIT_UTILS_PASSWORD, 'password'),
+        (DEFAULT_CONN_INFO['host'], 'host'),
+        (DEFAULT_CONN_INFO['port'], 'port'),
+        (DEFAULT_CONN_INFO['dbname'], 'dbname'),
+        (DEFAULT_CONN_INFO['user'], 'user'),
+        (DEFAULT_CONN_INFO['password'], 'password'),
     ):
         mongo_conn_info[name] = os.getenv(env_var, DEFAULT_CONN_INFO[name])
 
@@ -52,20 +53,20 @@ def structures_collection():
         ))
         return None
 
-    db.authenticate(mongo_conn_info['username'], mongo_conn_info['password'])
+    #db.authenticate(mongo_conn_info['user'], mongo_conn_info['password'])
 
     try:
-        structures_coll = pymongo.collection.Collection(
+        collection = pymongo.collection.Collection(
             db,
-            SPLIT_STRUCTURES_COLLECTION
+            collection_name
         )
     except InvalidName:
         log.critical("Mongo instance at {}:{} has no '{}' collection in the {}' database".format(
             mongo_conn_info['host'],
             mongo_conn_info['port'],
-            SPLIT_STRUCTURES_COLLECTION,
+            collection_name,
             mongo_conn_info['dbname']
         ))
         return None
 
-    return structures_coll
+    return collection
