@@ -5,6 +5,7 @@ Course information is queried directly from the Split MongoDB collections.
 
 from opaque_keys.edx.keys import CourseKey
 from mongo import get_collection
+from bson import ObjectId
 
 
 
@@ -15,7 +16,7 @@ def get_courses():
     coll = get_collection('modulestore.active_versions')
     courses = []
     for course in coll.find():
-        courses.append((course))
+        courses.append(course)
     return courses
 
 
@@ -25,13 +26,15 @@ def get_structure_id(course_key):
     If no course branch is specified in the course_key, published-branch is assumed.
     If no course is found, raises CourseNotFound.
     """
-    pass
+    coll = get_collection('modulestore.structures')
+    return
 
 def get_structure(struct_id):
     """
     Return the entire course structure as a dict.
     """
-    pass
+    coll = get_collection('modulestore.structures')
+    return coll.find_one({'_id' : ObjectId(struct_id)})
 
 def get_structure_history(course_key):
     """
