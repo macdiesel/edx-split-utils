@@ -4,6 +4,7 @@ Course information is queried directly from the Split MongoDB collections.
 """
 
 from opaque_keys.edx.keys import CourseKey
+from mongo import structures_collection
 
 
 def get_courses():
