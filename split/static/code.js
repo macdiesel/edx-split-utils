@@ -8,16 +8,25 @@ $(function() {
                 .css({
                     'content': 'data(name)',
                     'text-valign': 'center'
+                })
+            .selector('edge')
+                .css({
+                    'target-arrow-shape': 'triangle'
                 }),
 
         elements: {
-            nodes: [],
-            edges: []
+            nodes: [
+                {data: { id: "n1", name: "node 1" }},
+                {data: { id: "n2", name: "node 2" }}
+            ],
+            edges: [
+                {data: { id: "e1", source: "n1", target: "n2" }}
+            ]
         },
 
         layout: {
-            name: 'grid',
-            padding: 10
+            name: 'dagre',
+            rankDir: 'TB'
         },
         ready: function() {
             window.cy = this;
@@ -28,12 +37,6 @@ $(function() {
                 $("#info-pane").show();
 
             });
-            cy.add([
-                    { group: "nodes", data: { id: "n1", name: "node 1" }, position: { x: 100, y: 100 } },
-                    { group: "nodes", data: { id: "n2", name: "node 2" }, position: { x: 100, y: 200 } },
-                    { group: "edges", data: { id: "e1", source: "n1", target: "n2" } },
-
-            ]);
         }
     });
 });
