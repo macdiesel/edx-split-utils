@@ -3,6 +3,7 @@ Hackathon X split-utils project
 
 ## Getting Started:
 pip install -r requirements.txt
+
 python run.py
 
 
