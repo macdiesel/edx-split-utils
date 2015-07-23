@@ -16,11 +16,8 @@ DEFAULT_CONN_INFO = {
     'port': 27019,
     'dbname': 'edxapp',
     'user': 'edxapp',
-    'password': None,
+    'password': 'password',
 }
-
-# Name of Split structures collection.
-SPLIT_STRUCTURES_COLLECTION = 'modulestore.structures'
 
 
 def get_collection(collection_name):
@@ -30,11 +27,11 @@ def get_collection(collection_name):
     # Override Mongo server/credentials using environment variables.
     mongo_conn_info = {}
     for env_var, name in (
-        (DEFAULT_CONN_INFO['host'], 'host'),
-        (DEFAULT_CONN_INFO['port'], 'port'),
-        (DEFAULT_CONN_INFO['dbname'], 'dbname'),
-        (DEFAULT_CONN_INFO['user'], 'user'),
-        (DEFAULT_CONN_INFO['password'], 'password'),
+        ('SPLIT_UTILS_HOST', 'host'),
+        ('SPLIT_UTILS_PORT', 'port'),
+        ('SPLIT_UTILS_DB', 'dbname'),
+        ('SPLIT_UTILS_USERNAME', 'user'),
+        ('SPLIT_UTILS_PASSWORD', 'password'),
     ):
         mongo_conn_info[name] = os.getenv(env_var, DEFAULT_CONN_INFO[name])
 
@@ -53,7 +50,7 @@ def get_collection(collection_name):
         ))
         return None
 
-    #db.authenticate(mongo_conn_info['user'], mongo_conn_info['password'])
+    db.authenticate(mongo_conn_info['user'], mongo_conn_info['password'])
 
     try:
         collection = pymongo.collection.Collection(

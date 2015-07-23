@@ -8,6 +8,13 @@ from mongo import get_collection
 from bson import ObjectId
 
 
+"""
+Raised when course is not found.
+"""
+class CourseNotFound(Exception):
+    pass
+
+
 
 def get_courses():
     """
@@ -26,8 +33,17 @@ def get_structure_id(course_key):
     If no course branch is specified in the course_key, published-branch is assumed.
     If no course is found, raises CourseNotFound.
     """
-    coll = get_collection('modulestore.structures')
-    return
+    coll = get_collection('modulestore.active_versions')
+    branch = course_key.branch or 'published-branch'
+    course = coll.find_one({
+        'org': course_key.org,
+        'course': course_key.course,
+        'run': course_key.run,
+    })
+    if course is None:
+        raise CourseNotFound
+    else:
+        return course['versions'][branch]
 
 def get_structure(struct_id):
     """
