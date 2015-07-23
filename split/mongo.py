@@ -9,7 +9,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
-# Use this connection info unless overridden.
+# Use this connection info unless overridden by environment variables.
 DEFAULT_CONN_INFO = {
     'host': 'localhost',
     'port': 27017,
