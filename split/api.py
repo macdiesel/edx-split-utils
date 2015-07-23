@@ -33,8 +33,8 @@ def get_structure_id(course_key):
     If no course branch is specified in the course_key, published-branch is assumed.
     If no course is found, raises CourseNotFound.
     """
-    coll = get_collection('modulestore.active_versions')
     branch = course_key.branch or 'published-branch'
+    coll = get_collection('modulestore.active_versions')
     course = coll.find_one({
         'org': course_key.org,
         'course': course_key.course,
@@ -54,11 +54,18 @@ def get_structure(struct_id):
 
 def get_structure_history(course_key):
     """
-    Returns a ordered list of structure ids, starting with origin and ending with current.
+    Returns a ordered list of structure ids, starting with original and ending with the newest structure id.
     If no course branch is specified in the course_key, published-branch is assumed.
     If no course is found, raises CourseNotFound.
     """
-    pass
+    history = []
+    branch = course_key.branch or 'published-branch'
+    struct_id = get_structure_id(course_key.for_branch(branch))
+    while struct_id:
+        history.insert(0, struct_id)
+        struct_id = get_structure(struct_id)['previous_version']
+    return history
+
 
 def get_structure_history_graph(course_key):
     """
