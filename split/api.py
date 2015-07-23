@@ -7,15 +7,15 @@ from opaque_keys.edx.keys import CourseKey
 from mongo import get_collection
 
 
+
 def get_courses():
     """
     Returns a list of CourseKeys for all Split courses from MongoDB.
     """
     coll = get_collection('modulestore.active_versions')
     courses = []
-    for course in  coll.find():
-        courses.append(course)
-
+    for course in coll.find():
+        courses.append((course))
     return courses
 
 
