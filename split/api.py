@@ -28,6 +28,24 @@ def get_courses():
     return courses
 
 
+def get_structure_by_key(course_key):
+    """
+    Returns structure id of current structure for a course branch.
+    If no course branch is specified in the course_key, published-branch is assumed.
+    If no course is found, raises CourseNotFound.
+    """
+    branch = course_key.branch or 'published-branch'
+    coll = get_collection('modulestore.active_versions')
+    course = coll.find_one({
+        'org': course_key.org,
+        'course': course_key.course,
+        'run': course_key.run,
+    })
+    if course is None:
+        raise CourseNotFound
+    else:
+        return course['versions'][branch]
+
 def get_structure_id(course_key):
     """
     Returns structure id of current structure for a course branch.

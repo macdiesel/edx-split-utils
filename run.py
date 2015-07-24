@@ -33,12 +33,20 @@ def get_structure_id(course):
 def get_course_block_counts(course):
     course_key = CourseLocator.from_string(course)
     try:
-        structure_id = API.get_structure_id(course_key)
+        structure_id = API.get_structure_by_key(course_key)
     except API.CourseNotFound:
         abort(404)
     counts = API.get_block_counts(structure_id)
     return Response(dumps(counts), mimetype='application/json')
 
+@app.route("/api/v1/block_counts_by_id/<course_id>")
+def get_course_block_counts_by_id(course_id):
+    try:
+        structure_id = API.get_structure(course_id)
+    except API.CourseNotFound:
+        abort(404)
+    counts = API.get_block_counts(structure_id['_id'])
+    return Response(dumps(counts), mimetype='application/json')
 
 @app.route("/api/v1/history/main/<course>")
 def get_structure_history(course):
