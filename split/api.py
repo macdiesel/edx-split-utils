@@ -66,7 +66,6 @@ def get_structure_history(course_key):
         struct_id = get_structure(struct_id)['previous_version']
     return history
 
-
 def get_structure_history_graph(course_key):
     """
     Return a complete structure history graph for a course, including any dead branches.
@@ -75,7 +74,16 @@ def get_structure_history_graph(course_key):
     If no course branch is specified in the course_key, published-branch is assumed.
     If no course is found, raises CourseNotFound.
     """
-    pass
+    branch = course_key.branch or 'published-branch'
+    history = get_structure_history(course_key.for_branch(branch))
+    # Now iterate through the history and find all structures which claim each
+    # structure as its previous version.
+    coll = get_collection('modulestore.structures')
+    graph = {}
+    for struct_id in history:
+        all_children = coll.find({'previous_version': struct_id}, projection=['_id'])
+        graph[struct_id] = [c['_id'] for c in all_children]
+    return history[0], graph
 
 def get_course_metadata(course_key):
     """

@@ -33,7 +33,7 @@ def get_structure_id(course):
         return (None, 404)
     return "{}".format(structure_id)
 
-@app.route("/api/v1/history/<course>")
+@app.route("/api/v1/history/main/<course>")
 def get_structure_history(course):
     course_key = CourseLocator.from_string(course)
     try:
@@ -41,6 +41,15 @@ def get_structure_history(course):
     except API.CourseNotFound:
         return (None, 404)
     return "{}".format(history)
+
+@app.route("/api/v1/history/all/<course>")
+def get_structure_history_graph(course):
+    course_key = CourseLocator.from_string(course)
+    try:
+        root, history_graph = API.get_structure_history_graph(course_key)
+    except API.CourseNotFound:
+        return (None, 404)
+    return "Root: {} <p> Graph: {}".format(root, history_graph)
 
 
 if __name__ == "__main__":
