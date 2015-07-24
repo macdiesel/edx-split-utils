@@ -18,6 +18,13 @@ def get_courses():
     courses = API.get_courses()
     return Response(dumps(courses), mimetype='application/json')
 
+@app.route("/api/v1/course/<course_id>", methods=['GET'])
+def get_courses_by_id(course_id):
+    try:
+        course = API.get_course_by_id(course_id)
+    except API.CourseNotFound:
+        abort(404)
+    return Response(dumps(course), mimetype='application/json')
 
 @app.route("/api/v1/structure_id/<course>", methods=['GET'])
 def get_structure_id(course):
@@ -29,7 +36,7 @@ def get_structure_id(course):
     return Response(dumps(structure_id), mimetype='application/json')
 
 
-@app.route("/api/v1/block_counts/<course>")
+@app.route("/api/v1/block_counts/<course>", methods=['GET'])
 def get_course_block_counts(course):
     course_key = CourseLocator.from_string(course)
     try:
@@ -39,7 +46,7 @@ def get_course_block_counts(course):
     counts = API.get_block_counts(structure_id)
     return Response(dumps(counts), mimetype='application/json')
 
-@app.route("/api/v1/block_counts_by_id/<course_id>")
+@app.route("/api/v1/block_counts_by_id/<course_id>", methods=['GET'])
 def get_course_block_counts_by_id(course_id):
     try:
         structure_id = API.get_structure(course_id)
@@ -55,7 +62,7 @@ def get_block_counts_by_structure(struct_id):
     return Response(dumps(counts), mimetype='application/json')
 
 
-@app.route("/api/v1/history/main/<course>")
+@app.route("/api/v1/history/main/<course>", methods=['GET'])
 def get_structure_history(course):
     course_key = CourseLocator.from_string(course)
     try:
@@ -65,7 +72,7 @@ def get_structure_history(course):
     return Response(dumps(history), mimetype='application/json')
 
 
-@app.route("/api/v1/history/all/<course>")
+@app.route("/api/v1/history/all/<course>", methods=['GET'])
 def get_structure_history_graph(course):
     course_key = CourseLocator.from_string(course)
     try:

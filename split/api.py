@@ -40,6 +40,18 @@ def get_courses():
         courses.append(course)
     return courses
 
+def get_course_by_id(course_id):
+    """
+    Returns a split course from MongoDB.
+    """
+    coll = get_collection('modulestore.active_versions')
+    courses = []
+    course = coll.find_one(course_id)
+    if not course:
+        raise CourseNotFound
+    return course
+
+
 def _get_active_versions(course_key):
     """
     Get the active versions document for a course.

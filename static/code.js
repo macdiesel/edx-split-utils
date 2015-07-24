@@ -16,7 +16,7 @@ $(function() {
                 if (key.toLowerCase() == 'root') {
                     return true;
                 }
-
+                $.ajax({url: ""})
                 nodes.push({data: {id: key, name: key}});
                 console.log("key: " + key + " -- values: " + value)
                 if (value.length > 0) {
@@ -25,36 +25,8 @@ $(function() {
                     });
                 }
             });
-
-            // Create and set up the graph.
-            $('#cy').cytoscape({
-                style: cytoscape.stylesheet()
-                    .selector('node')
-                    .css({
-                        'content': 'data(name)',
-                        'text-valign': 'center'
-                    })
-                    .selector('edge')
-                    .css({
-                        'target-arrow-shape': 'triangle'
-                    }),
-
-                elements: {nodes: nodes, edges: edges},
-
-                layout: {
-                    name: 'dagre',
-                    rankDir: 'TB'
-                },
-                ready: function () {
-                    window.cy = this;
-                    cy.elements().unselectify();
-                    cy.on('mouseover', function (e) {
-                        var node = e.cyTarget;
-                        retrieveStructureInfo(node.data('id'));
-                    });
-                }
-            });
+            reloadGraph(nodes, edges);
         });
-
-
 });
+
+
