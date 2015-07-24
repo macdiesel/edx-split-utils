@@ -2,24 +2,29 @@
 <html>
 <head>
     <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet" />
+    <link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" />
     <script type="text/javascript" src="{{url_for('static', filename='jquery-2.1.4.min.js')}}"></script>
     <script type="text/javascript" src="{{url_for('static', filename='cytoscape.js-2.4.4/lib/dagre.js')}}"></script>
     <script type="text/javascript" src="{{url_for('static', filename='cytoscape.js-2.4.4/build/cytoscape.js')}}"></script>
     <script type="text/javascript" src="{{url_for('static', filename='code.js')}}"></script>
     <script type="text/javascript" src="{{url_for('static', filename='graphing.js')}}"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <script type="text/javascript">
         course_name = "{{ course_name }}";
     </script>
 </head>
 <body>
     <div id="user-input">
-        Current Course: {{ course_name }}
+        Current Course: <span id="course-title"></span> - <span id="course-id">{{ course_name }}</span>
     </div>
     <div id="cy">
     </div>
     <div id="info-pane">
         <h3>Block Information</h3>
         <pre id="block-counts">
+        </pre>
+        <h3>Course Information</h3>
+        <pre id="course-metadata">
         </pre>
     </div>
 

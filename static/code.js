@@ -1,6 +1,12 @@
 $(function () {
+    $('#info-pane').accordion({collapsible: true, heightStyle: "content"});
     nodes = [];
     edges = [];
+    $.ajax("/api/v1/course_metadata/" + course_name).done(function(data) {
+        document.title = data['display_name'];
+        $("#course-title").text(data['display_name']);
+        $("#course-metadata").text(JSON.stringify(data, null, 2))
+    });
     $.ajax({url: "/api/v1/history/all/" + course_name})
         .done(function (data) {
             history_nodes = data['nodes'];

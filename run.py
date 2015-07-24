@@ -72,6 +72,16 @@ def get_structure_history(course):
     return Response(dumps(history), mimetype='application/json')
 
 
+@app.route("/api/v1/course_metadata/<course>")
+def get_course_metadata(course):
+    course_key = CourseLocator.from_string(course)
+    try:
+        course_metadata = API.get_course_metadata(course_key)
+    except API.CourseNotFound:
+        abort(404)
+    return Response(dumps(course_metadata), mimetype='application/json')
+
+
 @app.route("/api/v1/history/all/<course>", methods=['GET'])
 def get_structure_history_graph(course):
     course_key = CourseLocator.from_string(course)
