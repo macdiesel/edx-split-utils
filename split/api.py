@@ -51,7 +51,6 @@ def get_course_by_id(course_id):
         raise CourseNotFound
     return course
 
-
 def _get_active_versions(course_key):
     """
     Get the active versions document for a course.
@@ -128,13 +127,24 @@ def get_structure_history_graph(course_key):
     # Now iterate through the history and find all structures which claim each
     # structure as its previous version.
     coll = get_collection('modulestore.structures')
-    graph = {'root':[str(history[0])], 'current':[str(history[-1])] }
     nodes = {}
     for struct_id in history:
         all_children = coll.find({'previous_version': ObjectId(struct_id)}, projection=['_id'])
         nodes[str(struct_id)] = [str(c['_id']) for c in all_children]
-    graph['nodes'] = nodes
-    return graph
+    return {
+        'root': [str(history[0])],
+        'current': [str(history[-1])],
+        'nodes': nodes,
+    }
+
+def _find_course_block(structure):
+    """
+    Given a course structure, return the top-level course block.
+    """
+    for block in structure['blocks']:
+        if block['block_type'] == 'course' and block['block_id'] == 'course':
+            return block
+    return None
 
 def get_course_metadata(course_key):
     """
@@ -142,7 +152,11 @@ def get_course_metadata(course_key):
     If no course branch is specified in the course_key, published-branch is assumed.
     If no course is found, raises CourseNotFound.
     """
-    return {}
+    branch = course_key.branch or 'published-branch'
+    struct_id = get_structure_id(course_key)
+    structure = get_structure(struct_id)
+    course_block = _find_course_block(structure)
+    return course_block['fields']
 
 def get_block_counts(struct_id):
     """
