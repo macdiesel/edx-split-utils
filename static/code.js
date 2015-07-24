@@ -1,12 +1,4 @@
-$(function() {
-    // Hide the info pane initially
-    function retrieveStructureInfo(structure_id) {
-        $.ajax("/api/v1/block_counts_by_structure/" + structure_id).
-            done(function(data){
-                $("#block-counts").text(JSON.stringify(data, null, 2));
-            });
-    };
-
+$(function () {
     //Get the info to load the graph
     nodes = [];
     edges = [];
@@ -29,4 +21,11 @@ $(function() {
         });
 });
 
+// Hide the info pane initially
+function retrieveStructureInfo(structure_id) {
+    $.ajax("/api/v1/block_counts_by_structure/" + structure_id).
+        done(function (data) {
+            $("#block-counts").text(JSON.stringify(data, null, 2));
+        });
+};
 
