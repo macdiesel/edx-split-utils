@@ -1,15 +1,16 @@
 from flask import Flask, Response, request, render_template
 import split.api as API
-from bson import Binary, Code
 from bson.json_util import dumps
 from opaque_keys.edx.locator import CourseLocator
 
+
 app = Flask(__name__)
+app.debug = True
 
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return render_template('split/templates/graphtest.html')
 
 
 @app.route("/api/v1/courses")
