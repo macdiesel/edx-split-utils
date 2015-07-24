@@ -129,9 +129,11 @@ def get_structure_history_graph(course_key):
     # structure as its previous version.
     coll = get_collection('modulestore.structures')
     graph = {'root':[str(history[0])], 'current':[str(history[-1])] }
+    nodes = {}
     for struct_id in history:
         all_children = coll.find({'previous_version': ObjectId(struct_id)}, projection=['_id'])
-        graph[str(struct_id)] = [str(c['_id']) for c in all_children]
+        nodes[str(struct_id)] = [str(c['_id']) for c in all_children]
+    graph['nodes'] = nodes
     return graph
 
 def get_course_metadata(course_key):
