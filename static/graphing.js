@@ -13,6 +13,10 @@ function reloadGraph(nodes, edges) {
             .selector('node[root]')
             .css({
                 'background-color': 'red'
+            })
+            .selector('node[current]')
+            .css({
+                'background-color': 'green'
             }),
 
         elements: {nodes: nodes, edges: edges},
