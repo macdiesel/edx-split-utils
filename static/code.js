@@ -1,11 +1,16 @@
 $(function() {
     // Hide the info pane initially
-    $("#info-pane").hide();
+    function retrieveStructureInfo(structure_id) {
+        $.ajax("/api/v1/block_counts_by_structure/" + structure_id).
+            done(function(data){
+                $("#block-counts").text(JSON.stringify(data, null, 2));
+            });
+    };
 
     //Get the info to load the graph
     nodes = [];
     edges = [];
-    $.ajax({url: "http://localhost:5000/api/v1/history/all/course-v1:edX+test105+2015_Q2"})
+    $.ajax({url: "/api/v1/history/all/course-v1:edX+test105+2015_Q2"})
         .done(function (data) {
             $.each(data, function (key, value) {
                 if (key.toLowerCase() == 'root') {
@@ -43,11 +48,9 @@ $(function() {
                 ready: function () {
                     window.cy = this;
                     cy.elements().unselectify();
-                    cy.on('tap', function (e) {
+                    cy.on('mouseover', function (e) {
                         var node = e.cyTarget;
-                        $("#info-pane").text(node.data('name'));
-                        $("#info-pane").show();
-
+                        retrieveStructureInfo(node.data('id'));
                     });
                 }
             });
