@@ -3,6 +3,8 @@ API for querying information about Split courses.
 Course information is queried directly from the Split MongoDB collections.
 """
 
+import datetime
+import pytz
 from bson import ObjectId
 from collections import Counter
 from mongo import get_collection
@@ -15,6 +17,17 @@ Raised when course is not found.
 class CourseNotFound(Exception):
     pass
 
+"""
+Raised when rolling back a course branch to a version not in the course branch's history.
+"""
+class VersionNotInHistory(Exception):
+    pass
+
+"""
+Raised when a course rollback fails.
+"""
+class RollbackFailed(Exception):
+    pass
 
 
 def get_courses():
@@ -27,6 +40,16 @@ def get_courses():
         courses.append(course)
     return courses
 
+def _get_active_versions(course_key):
+    """
+    Get the active versions document for a course.
+    """
+    coll = get_collection('modulestore.active_versions')
+    return coll.find_one({
+        'org': course_key.org,
+        'course': course_key.course,
+        'run': course_key.run,
+    })
 
 def get_structure_by_key(course_key):
     """
@@ -53,12 +76,7 @@ def get_structure_id(course_key):
     If no course is found, raises CourseNotFound.
     """
     branch = course_key.branch or 'published-branch'
-    coll = get_collection('modulestore.active_versions')
-    course = coll.find_one({
-        'org': course_key.org,
-        'course': course_key.course,
-        'run': course_key.run,
-    })
+    course = _get_active_versions(course_key)
     if course is None:
         raise CourseNotFound
     else:
@@ -121,3 +139,31 @@ def get_block_counts(struct_id):
     for block in struct['blocks']:
         block_counts.update({block['block_type']: 1})
     return dict(block_counts)
+
+def rollback_to_structure_id(course_key, struct_id, verify_in_history=True):
+    """
+    Rollback a course to a previous structure version.
+    Optionally verify that the structure is actually in the course's version history.
+    Returns the new active_versions document.
+    If no course branch is specified in the course_key, published-branch is assumed.
+    If no course is found, raises CourseNotFound.
+    If a history check is made and fails, raises VersionNotInHistory.
+    If the update fails, raises RollbackFailed.
+    """
+    branch = course_key.branch or 'published-branch'
+    if verify_in_history:
+        history = get_structure_history(course_key.for_branch(branch))
+        if struct_id not in history:
+            raise VersionNotInHistory
+
+    # Grab the current active version (and verify that the course exists).
+    course_index = _get_active_versions(course_key)
+
+    # Change the course's active version.
+    course_index['versions'][branch] = struct_id
+    course_index['last_update'] = datetime.datetime.now(pytz.utc)
+    coll = get_collection('modulestore.active_versions')
+    result = coll.update({'_id': course_index['_id']}, course_index, upsert=False)
+    if result['nModified'] < 1:
+        raise RollbackFailed("active_versions update failed.")
+    return _get_active_versions(course_key)
