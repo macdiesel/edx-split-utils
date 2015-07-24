@@ -1,5 +1,13 @@
-body { 
+body {
   font: 14px helvetica neue, helvetica, arial, sans-serif;
+}
+
+#user-input {
+  height: 200px;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 #cy {
