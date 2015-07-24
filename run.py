@@ -5,11 +5,17 @@ from opaque_keys.edx.locator import CourseLocator
 
 
 app = Flask(__name__)
-app.debug = True
+
 
 @app.route("/")
+def all_courses():
+    courses = API.get_courses()
+    course_keys = [CourseLocator(org=course['org'], course=course['course'], run=course['run']) for course in courses]
+    return render_template("all_courses.html", courses=course_keys)
+
+
 @app.route("/<course>")
-def hello(course = "course-v1:edX+test105+2015_Q2"):
+def course(course = "course-v1:edX+test105+2015_Q2"):
     return render_template('graphtest.html', course_name = course)
 
 
