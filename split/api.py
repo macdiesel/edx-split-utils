@@ -63,7 +63,7 @@ def get_structure_history(course_key):
     branch = course_key.branch or 'published-branch'
     struct_id = get_structure_id(course_key.for_branch(branch))
     while struct_id:
-        history.insert(0, struct_id)
+        history.insert(0, str(struct_id))
         struct_id = get_structure(struct_id)['previous_version']
     return history
 
@@ -80,11 +80,11 @@ def get_structure_history_graph(course_key):
     # Now iterate through the history and find all structures which claim each
     # structure as its previous version.
     coll = get_collection('modulestore.structures')
-    graph = {}
+    graph = {'root':[str(history[0])]}
     for struct_id in history:
-        all_children = coll.find({'previous_version': struct_id}, projection=['_id'])
-        graph[struct_id] = [c['_id'] for c in all_children]
-    return history[0], graph
+        all_children = coll.find({'previous_version': ObjectId(struct_id)}, projection=['_id'])
+        graph[str(struct_id)] = [str(c['_id']) for c in all_children]
+    return graph
 
 def get_course_metadata(course_key):
     """
