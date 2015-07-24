@@ -4,7 +4,7 @@ body {
 
 #cy {
   height: 100%;
-  width: 100%;
+  width: 50%;
   position: absolute;
   left: 0;
   top: 0;
@@ -17,4 +17,11 @@ body {
   z-index: -1;
   left: 1em;
   top: 1em;
+}
+
+#info-pane {
+    height: 100%;
+    width: 50%;
+    position: relative;
+    float: right;
 }

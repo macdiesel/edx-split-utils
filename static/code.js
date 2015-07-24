@@ -1,5 +1,5 @@
-$(function () {
-    // Hide the info pane initially eles.one()
+$(function() {
+    // Hide the info pane initially
     $("#info-pane").hide();
 
     //Get the info to load the graph

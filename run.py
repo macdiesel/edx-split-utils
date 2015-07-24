@@ -10,7 +10,7 @@ app.debug = True
 
 @app.route("/")
 def hello():
-    return render_template('split/templates/graphtest.html')
+    return render_template('graphtest.html')
 
 
 @app.route("/api/v1/courses", methods=['GET'])

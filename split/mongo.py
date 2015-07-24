@@ -38,7 +38,7 @@ def get_collection(collection_name):
     # Connect to Mongo database.
     client = pymongo.MongoClient(
         host=mongo_conn_info['host'],
-        port=mongo_conn_info['port'],
+        port=int(mongo_conn_info['port']),
     )
     try:
         db = client[mongo_conn_info['dbname']]
