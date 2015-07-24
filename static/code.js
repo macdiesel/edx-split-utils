@@ -3,10 +3,8 @@ $(function () {
     edges = [];
     $.ajax({url: "/api/v1/history/all/" + course_name})
         .done(function (data) {
-            $.each(data, function (key, value) {
-                if (key.toLowerCase() == 'root' || key.toLowerCase() == 'current') {
-                    return true;
-                }
+            history_nodes = data['nodes'];
+            $.each(history_nodes, function (key, value) {
                 node_data = {data: {id: key, name: key}}
                 special_nodes = ['root', 'current'];
                 for (var i = 0; i < special_nodes.length; i++) {
