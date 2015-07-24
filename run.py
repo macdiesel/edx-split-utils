@@ -35,7 +35,7 @@ def get_structure_id(course):
         structure_id = API.get_structure_id(course_key)
     except API.CourseNotFound:
         return (None, 404)
-    return "{}".format(structure_id)
+    return Response(dumps(structure_id), mimetype='application/json')
 
 
 @app.route("/api/v1/block_counts/<course>")
@@ -46,7 +46,7 @@ def get_course_block_counts(course):
     except API.CourseNotFound:
         return (None, 404)
     counts = API.get_block_counts(structure_id)
-    return "{}".format(counts)
+    return Response(dumps(counts), mimetype='application/json')
 
 
 @app.route("/api/v1/history/main/<course>")
@@ -56,7 +56,7 @@ def get_structure_history(course):
         history = API.get_structure_history(course_key)
     except API.CourseNotFound:
         return (None, 404)
-    return "{}".format(history)
+    return Response(dumps(history), mimetype='application/json')
 
 
 @app.route("/api/v1/history/all/<course>")
@@ -66,13 +66,12 @@ def get_structure_history_graph(course):
         root, history_graph = API.get_structure_history_graph(course_key)
     except API.CourseNotFound:
         return (None, 404)
-    return "Root: {} <p> Graph: {}".format(root, history_graph)
+    return Response(dumps(root, history_graph), mimetype='application/json')
 
 
 @app.route("/graph_test")
 def graph_test():
     return render_template("graphtest.html")
-
 
 if __name__ == "__main__":
     app.run()
