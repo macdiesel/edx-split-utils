@@ -1,4 +1,4 @@
-from flask import Flask, Response, request
+from flask import Flask, Response, request, render_template
 import split.api as API
 from bson import Binary, Code
 from bson.json_util import dumps
@@ -6,14 +6,17 @@ from opaque_keys.edx.locator import CourseLocator
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def hello():
     return "Hello World!"
+
 
 @app.route("/api/v1/courses")
 def get_courses():
     courses = API.get_courses()
     return Response(dumps(courses), mimetype='application/json')
+
 
 @app.route("/api/v1/structure")
 def get_structure():
@@ -24,6 +27,7 @@ def get_structure():
     else:
         return Response(dumps(structure), mimetype='application/json')
 
+
 @app.route("/api/v1/structure_id/<course>")
 def get_structure_id(course):
     course_key = CourseLocator.from_string(course)
@@ -32,6 +36,7 @@ def get_structure_id(course):
     except API.CourseNotFound:
         return (None, 404)
     return "{}".format(structure_id)
+
 
 @app.route("/api/v1/block_counts/<course>")
 def get_course_block_counts(course):
@@ -43,6 +48,7 @@ def get_course_block_counts(course):
     counts = API.get_block_counts(structure_id)
     return "{}".format(counts)
 
+
 @app.route("/api/v1/history/main/<course>")
 def get_structure_history(course):
     course_key = CourseLocator.from_string(course)
@@ -51,6 +57,7 @@ def get_structure_history(course):
     except API.CourseNotFound:
         return (None, 404)
     return "{}".format(history)
+
 
 @app.route("/api/v1/history/all/<course>")
 def get_structure_history_graph(course):
@@ -62,5 +69,10 @@ def get_structure_history_graph(course):
     return "Root: {} <p> Graph: {}".format(root, history_graph)
 
 
+@app.route("/graph_test")
+def graph_test():
+    return render_template("graphtest.html")
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
