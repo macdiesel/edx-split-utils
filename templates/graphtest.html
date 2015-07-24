@@ -7,8 +7,14 @@
     <script type="text/javascript" src="{{url_for('static', filename='cytoscape.js-2.4.4/build/cytoscape.js')}}"></script>
     <script type="text/javascript" src="{{url_for('static', filename='code.js')}}"></script>
     <script type="text/javascript" src="{{url_for('static', filename='graphing.js')}}"></script>
+    <script type="text/javascript">
+        course_name = "{{ course_name }}";
+    </script>
 </head>
 <body>
+    <div id="user-input">
+        Current Course: {{ course_name }}
+    </div>
     <div id="cy">
     </div>
     <div id="info-pane">

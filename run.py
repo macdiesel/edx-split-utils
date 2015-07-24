@@ -1,4 +1,4 @@
-from flask import Flask, Response, request, render_template, abort
+from flask import Flask, Response, request, render_template, abort, redirect, url_for
 import split.api as API
 from bson.json_util import dumps
 from opaque_keys.edx.locator import CourseLocator
@@ -7,10 +7,10 @@ from opaque_keys.edx.locator import CourseLocator
 app = Flask(__name__)
 app.debug = True
 
-
 @app.route("/")
-def hello():
-    return render_template('graphtest.html')
+@app.route("/<course>")
+def hello(course = "course-v1:edX+test105+2015_Q2"):
+    return render_template('graphtest.html', course_name = course)
 
 
 @app.route("/api/v1/courses", methods=['GET'])
@@ -88,7 +88,7 @@ def generic_error_handler(error):
 
 @app.route("/graph_test")
 def graph_test():
-    return render_template("graphtest.html")
+    return redirect(url_for('hello'))
 
 if __name__ == "__main__":
     app.run(debug=True)

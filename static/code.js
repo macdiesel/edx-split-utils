@@ -1,7 +1,7 @@
 $(function () {
     nodes = [];
     edges = [];
-    $.ajax({url: "/api/v1/history/all/course-v1:edX+test105+2015_Q2"})
+    $.ajax({url: "/api/v1/history/all/" + course_name})
         .done(function (data) {
             $.each(data, function (key, value) {
                 if (key.toLowerCase() == 'root') {
