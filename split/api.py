@@ -128,7 +128,7 @@ def get_structure_history_graph(course_key):
     # Now iterate through the history and find all structures which claim each
     # structure as its previous version.
     coll = get_collection('modulestore.structures')
-    graph = {'root':[str(history[0])]}
+    graph = {'root':[str(history[0])], 'current':[str(history[-1])] }
     for struct_id in history:
         all_children = coll.find({'previous_version': ObjectId(struct_id)}, projection=['_id'])
         graph[str(struct_id)] = [str(c['_id']) for c in all_children]
