@@ -33,6 +33,16 @@ def get_structure_id(course):
         return (None, 404)
     return "{}".format(structure_id)
 
+@app.route("/api/v1/block_counts/<course>")
+def get_course_block_counts(course):
+    course_key = CourseLocator.from_string(course)
+    try:
+        structure_id = API.get_structure_id(course_key)
+    except API.CourseNotFound:
+        return (None, 404)
+    counts = API.get_block_counts(structure_id)
+    return "{}".format(counts)
+
 @app.route("/api/v1/history/main/<course>")
 def get_structure_history(course):
     course_key = CourseLocator.from_string(course)

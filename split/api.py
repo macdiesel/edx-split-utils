@@ -3,9 +3,10 @@ API for querying information about Split courses.
 Course information is queried directly from the Split MongoDB collections.
 """
 
-from opaque_keys.edx.keys import CourseKey
-from mongo import get_collection
 from bson import ObjectId
+from collections import Counter
+from mongo import get_collection
+from opaque_keys.edx.keys import CourseKey
 
 
 """
@@ -68,7 +69,7 @@ def get_structure_history(course_key):
 
 def get_structure_history_graph(course_key):
     """
-    Return a complete structure history graph for a course, including any dead branches.
+    Returns a complete structure history graph for a course, including any dead branches.
     The return format is:
     Root structure id, {struct_id1: [child_struct_id1, child_struct_id2], struct_id2: [child_struct_id3], etc...}
     If no course branch is specified in the course_key, published-branch is assumed.
@@ -92,3 +93,13 @@ def get_course_metadata(course_key):
     If no course is found, raises CourseNotFound.
     """
     return {}
+
+def get_block_counts(struct_id):
+    """
+    Returns a dict of block_type and the number of each block type in a particular course structure.
+    """
+    struct = get_structure(struct_id)
+    block_counts = Counter()
+    for block in struct['blocks']:
+        block_counts.update({block['block_type']: 1})
+    return dict(block_counts)
