@@ -1,5 +1,4 @@
 $(function () {
-    //Get the info to load the graph
     nodes = [];
     edges = [];
     $.ajax({url: "/api/v1/history/all/course-v1:edX+test105+2015_Q2"})
@@ -8,8 +7,12 @@ $(function () {
                 if (key.toLowerCase() == 'root') {
                     return true;
                 }
-                $.ajax({url: ""})
-                nodes.push({data: {id: key, name: key}});
+                
+                node_data = {data: {id: key, name: key}}
+                if (key === data['root'][0]) {
+                    node_data.data['root'] = true;
+                }
+                nodes.push(node_data);
                 console.log("key: " + key + " -- values: " + value)
                 if (value.length > 0) {
                     $.each(value, function (index, val) {
@@ -21,7 +24,6 @@ $(function () {
         });
 });
 
-// Hide the info pane initially
 function retrieveStructureInfo(structure_id) {
     $.ajax("/api/v1/block_counts_by_structure/" + structure_id).
         done(function (data) {

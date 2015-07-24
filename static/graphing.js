@@ -9,6 +9,10 @@ function reloadGraph(nodes, edges) {
             .selector('edge')
             .css({
                 'target-arrow-shape': 'triangle'
+            })
+            .selector('node[root]')
+            .css({
+                'background-color': 'red'
             }),
 
         elements: {nodes: nodes, edges: edges},
